@@ -13,3 +13,6 @@ dist-ssr
 .idea
 .DS_Store
 .claude/
+
+# Staging area for the next commit message, not project content
+commit-msg.txt

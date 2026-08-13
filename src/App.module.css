@@ -24,6 +24,14 @@
   color: var(--text-dim);
 }
 
+.status[data-state='ready'] {
+  color: var(--pass);
+}
+
+.status[data-state='failed'] {
+  color: var(--fail);
+}
+
 .body {
   display: flex;
   flex: 1;
@@ -45,4 +53,35 @@
   overflow-y: auto;
   padding: 16px;
   color: var(--text-dim);
+}
+
+.runButton {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.runButton:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.runButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.output {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: pre-wrap;
 }
