@@ -1,0 +1,90 @@
+.panel {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.pattern {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.badge {
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #1e293b;
+  color: var(--text-dim);
+}
+
+.badge[data-difficulty='easy'] {
+  color: var(--pass);
+}
+
+.badge[data-difficulty='medium'] {
+  color: var(--error);
+}
+
+.badge[data-difficulty='hard'] {
+  color: var(--fail);
+}
+
+.description {
+  margin: 10px 0 0;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.examples {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #020617;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow-x: auto;
+}
+
+.hintButton {
+  margin-top: 10px;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.hintButton:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.hint {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-left: 2px solid var(--accent);
+  background: #0b1220;
+  line-height: 1.5;
+  color: var(--text);
+}

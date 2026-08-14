@@ -1,33 +1,31 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createRuntime } from './lib/runtimes'
 import type { Runtime } from './lib/runtimes'
-import { allTestsPassed, buildTestScript, patterns } from './lib/patterns'
+import { buildTestScript, patterns } from './lib/patterns'
+import ProblemPanel from './components/ProblemPanel'
+import Editor from './components/Editor'
+import OutputPanel from './components/OutputPanel'
 import styles from './App.module.css'
 
-// Temporary scaffolding for stage 3: a known-good solution, so a run can be
-// checked end to end before the editor exists. Removed in stage 4.
-const REFERENCE_SOLUTION = `def pair_sum(nums, target):
-    lo, hi = 0, len(nums) - 1
-    while lo < hi:
-        total = nums[lo] + nums[hi]
-        if total == target:
-            return (lo, hi)
-        if total < target:
-            lo += 1
-        else:
-            hi -= 1
-    return (-1, -1)
-`
-
 type RuntimeStatus = 'loading' | 'ready' | 'failed'
+
+const STATUS_LABEL: Record<RuntimeStatus, string> = {
+  loading: 'Runtime loading…',
+  ready: 'Runtime ready',
+  failed: 'Runtime failed',
+}
 
 export default function App() {
   const runtimeRef = useRef<Runtime | null>(null)
   const [status, setStatus] = useState<RuntimeStatus>('loading')
-  const [output, setOutput] = useState('')
   const [running, setRunning] = useState(false)
+  const [output, setOutput] = useState('')
 
+  // Stage 5 makes this selectable; for now the first pattern is the only one.
   const pattern = patterns[0]
+  const impl = pattern?.implementations.python
+
+  const [code, setCode] = useState(impl?.starter ?? '')
 
   useEffect(() => {
     const runtime = createRuntime('python')
@@ -50,70 +48,73 @@ export default function App() {
     }
   }, [])
 
-  async function runCode(userCode: string) {
+  const runTests = useCallback(async () => {
     const runtime = runtimeRef.current
-    if (!runtime || !pattern) return
+    if (!runtime || !pattern || !impl) return
     setRunning(true)
-    const script = buildTestScript(pattern, 'python', userCode)
-    const result = await runtime.run(script)
+    const result = await runtime.run(buildTestScript(pattern, 'python', code))
     setRunning(false)
     setOutput(
-      [result.stdout, result.stderr].filter(Boolean).join('\n').trimEnd() +
-        `\n\n[ok=${result.ok} passed=${allTestsPassed(result.stdout)} ${Math.round(result.elapsedMs)}ms]`,
+      [result.stdout, result.stderr]
+        .filter(Boolean)
+        .join('\n')
+        .replace(/\n+$/, ''),
     )
+  }, [code, impl, pattern])
+
+  function resetCode() {
+    setCode(impl?.starter ?? '')
+    setOutput('')
   }
 
-  const statusLabel = {
-    loading: 'Runtime loading…',
-    ready: 'Runtime ready',
-    failed: 'Runtime failed',
-  }[status]
-
-  const impl = pattern?.implementations.python
+  if (!pattern || !impl) {
+    return <div className={styles.app}>No patterns loaded.</div>
+  }
 
   return (
     <div className={styles.app}>
       <header className={styles.header}>
         <h1 className={styles.title}>Pattern Practice</h1>
         <span className={styles.status} data-state={status}>
-          {statusLabel}
+          {STATUS_LABEL[status]}
         </span>
       </header>
 
       <div className={styles.body}>
         <nav className={styles.nav}>
           {patterns.map((p) => (
-            <div key={p.id}>
+            <div key={p.id} className={styles.navItem}>
               {p.order}. {p.pattern}
             </div>
           ))}
         </nav>
 
         <main className={styles.main}>
-          {pattern && impl ? (
-            <>
-              <p>
-                {pattern.title} — {impl.tests.length} tests
-              </p>
-              <button
-                className={styles.runButton}
-                onClick={() => runCode(REFERENCE_SOLUTION)}
-                disabled={status !== 'ready' || running}
-              >
-                {running ? 'Running…' : '▶ Run reference solution'}
-              </button>{' '}
-              <button
-                className={styles.runButton}
-                onClick={() => runCode(impl.starter)}
-                disabled={status !== 'ready' || running}
-              >
-                ▶ Run starter (should fail)
-              </button>
-            </>
-          ) : (
-            <p>No patterns loaded.</p>
-          )}
-          {output && <pre className={styles.output}>{output}</pre>}
+          <ProblemPanel pattern={pattern} />
+
+          <Editor
+            value={code}
+            language="python"
+            filename={`solution.${runtimeRef.current?.fileExtension ?? 'py'}`}
+            onChange={setCode}
+            onRun={runTests}
+          />
+
+          <div className={styles.actions}>
+            <button
+              className={styles.runButton}
+              onClick={runTests}
+              disabled={status !== 'ready' || running}
+            >
+              {running ? 'Running…' : '▶ Run tests'}
+            </button>
+            <button className={styles.button} onClick={resetCode}>
+              Reset
+            </button>
+            <span className={styles.shortcut}>⌘/Ctrl + Enter</span>
+          </div>
+
+          <OutputPanel text={output} running={running} />
         </main>
       </div>
     </div>

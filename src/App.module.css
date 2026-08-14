@@ -47,7 +47,15 @@
   color: var(--text-dim);
 }
 
+.navItem {
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
 .main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   flex: 1;
   min-width: 0;
   overflow-y: auto;
@@ -55,6 +63,13 @@
   color: var(--text-dim);
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button,
 .runButton {
   padding: 6px 12px;
   border: 1px solid var(--border);
@@ -65,23 +80,25 @@
   cursor: pointer;
 }
 
+.runButton {
+  border-color: #14532d;
+  background: #052e16;
+  color: var(--pass);
+}
+
+.button:hover:not(:disabled),
 .runButton:hover:not(:disabled) {
   border-color: var(--accent);
 }
 
+.button:disabled,
 .runButton:disabled {
   opacity: 0.5;
   cursor: default;
 }
 
-.output {
-  margin-top: 12px;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--panel);
-  color: var(--text);
-  font-family: var(--font-mono);
+.shortcut {
+  margin-left: auto;
   font-size: 12px;
-  white-space: pre-wrap;
+  color: var(--text-dim);
 }
