@@ -1,11 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
 import { createRuntime } from './lib/runtimes'
 import type { Runtime } from './lib/runtimes'
+import { allTestsPassed, buildTestScript, patterns } from './lib/patterns'
 import styles from './App.module.css'
 
-const SMOKE_TEST_CODE = `print("hi from CPython")
-import sys
-print(sys.version)`
+// Temporary scaffolding for stage 3: a known-good solution, so a run can be
+// checked end to end before the editor exists. Removed in stage 4.
+const REFERENCE_SOLUTION = `def pair_sum(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo < hi:
+        total = nums[lo] + nums[hi]
+        if total == target:
+            return (lo, hi)
+        if total < target:
+            lo += 1
+        else:
+            hi -= 1
+    return (-1, -1)
+`
 
 type RuntimeStatus = 'loading' | 'ready' | 'failed'
 
@@ -14,6 +26,8 @@ export default function App() {
   const [status, setStatus] = useState<RuntimeStatus>('loading')
   const [output, setOutput] = useState('')
   const [running, setRunning] = useState(false)
+
+  const pattern = patterns[0]
 
   useEffect(() => {
     const runtime = createRuntime('python')
@@ -36,15 +50,16 @@ export default function App() {
     }
   }, [])
 
-  async function runSmokeTest() {
+  async function runCode(userCode: string) {
     const runtime = runtimeRef.current
-    if (!runtime) return
+    if (!runtime || !pattern) return
     setRunning(true)
-    const result = await runtime.run(SMOKE_TEST_CODE)
+    const script = buildTestScript(pattern, 'python', userCode)
+    const result = await runtime.run(script)
     setRunning(false)
     setOutput(
       [result.stdout, result.stderr].filter(Boolean).join('\n').trimEnd() +
-        `\n\n[ok=${result.ok} timedOut=${result.timedOut} ${Math.round(result.elapsedMs)}ms]`,
+        `\n\n[ok=${result.ok} passed=${allTestsPassed(result.stdout)} ${Math.round(result.elapsedMs)}ms]`,
     )
   }
 
@@ -53,6 +68,8 @@ export default function App() {
     ready: 'Runtime ready',
     failed: 'Runtime failed',
   }[status]
+
+  const impl = pattern?.implementations.python
 
   return (
     <div className={styles.app}>
@@ -64,18 +81,38 @@ export default function App() {
       </header>
 
       <div className={styles.body}>
-        <nav className={styles.nav}>Patterns</nav>
+        <nav className={styles.nav}>
+          {patterns.map((p) => (
+            <div key={p.id}>
+              {p.order}. {p.pattern}
+            </div>
+          ))}
+        </nav>
 
         <main className={styles.main}>
-          {/* Temporary scaffolding: proves the runtime round-trips. Replaced by
-              the problem/editor/output panels in the next stages. */}
-          <button
-            className={styles.runButton}
-            onClick={runSmokeTest}
-            disabled={status !== 'ready' || running}
-          >
-            {running ? 'Running…' : '▶ Run print("hi")'}
-          </button>
+          {pattern && impl ? (
+            <>
+              <p>
+                {pattern.title} — {impl.tests.length} tests
+              </p>
+              <button
+                className={styles.runButton}
+                onClick={() => runCode(REFERENCE_SOLUTION)}
+                disabled={status !== 'ready' || running}
+              >
+                {running ? 'Running…' : '▶ Run reference solution'}
+              </button>{' '}
+              <button
+                className={styles.runButton}
+                onClick={() => runCode(impl.starter)}
+                disabled={status !== 'ready' || running}
+              >
+                ▶ Run starter (should fail)
+              </button>
+            </>
+          ) : (
+            <p>No patterns loaded.</p>
+          )}
           {output && <pre className={styles.output}>{output}</pre>}
         </main>
       </div>

@@ -1,0 +1,19 @@
+{
+  "id": "01-two-pointers",
+  "order": 1,
+  "pattern": "two pointers",
+  "title": "Pair sum in a sorted array",
+  "difficulty": "easy",
+  "description": "Given a sorted array of integers and a target, return the indices of the two numbers that add up to the target as a tuple (i, j) with i < j. Exactly one valid pair exists.",
+  "examples": [
+    "pair_sum([1, 2, 4, 7, 11, 15], 13) -> (1, 4)",
+    "pair_sum([1, 2], 3)                -> (0, 1)",
+    "pair_sum([-3, -1, 0, 2, 5], 1)     -> (1, 3)"
+  ],
+  "hint": "Start one pointer at each end. If the sum is too big, move the right pointer in; if it is too small, move the left pointer out. The array being sorted is what makes this valid.",
+  "implementations": {
+    "python": {
+      "functionName": "pair_sum"
+    }
+  }
+}
