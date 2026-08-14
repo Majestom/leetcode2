@@ -1,0 +1,21 @@
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px 6px 0 0;
+  border-bottom: 0;
+  background: transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tab[data-selected='true'] {
+  background: var(--panel);
+  color: var(--text);
+}

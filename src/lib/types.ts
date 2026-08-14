@@ -2,6 +2,9 @@ import type { LanguageId } from './runtimes'
 
 export type Difficulty = 'easy' | 'medium' | 'hard'
 
+/** Per (pattern, language) progress. Never regresses once passed. */
+export type PatternStatus = 'unattempted' | 'attempted' | 'passed'
+
 export type TestFile = {
   /** Full path of the source file, useful for debugging. */
   path: string

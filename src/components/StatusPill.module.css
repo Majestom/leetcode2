@@ -1,0 +1,15 @@
+.pill {
+  flex-shrink: 0;
+  width: 1em;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--text-dim);
+}
+
+.pill[data-status='passed'] {
+  color: var(--pass);
+}
+
+.pill[data-status='attempted'] {
+  color: var(--error);
+}

@@ -1,0 +1,20 @@
+{
+  "id": "02-sliding-window",
+  "order": 2,
+  "pattern": "sliding window",
+  "title": "Longest substring without repeats",
+  "difficulty": "medium",
+  "description": "Given a string s, return the length of the longest substring with no repeating characters.",
+  "examples": [
+    "longest_unique('abcabcbb') -> 3",
+    "longest_unique('bbbbb')    -> 1",
+    "longest_unique('pwwkew')   -> 3",
+    "longest_unique('')         -> 0"
+  ],
+  "hint": "Maintain a set of chars in the window. Expand right; when a duplicate appears, shrink from left until it's gone.",
+  "implementations": {
+    "python": {
+      "functionName": "longest_unique"
+    }
+  }
+}
