@@ -2,6 +2,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createRuntime } from './lib/runtimes'
 import type { LanguageId, Runtime } from './lib/runtimes'
 import { allTestsPassed, buildTestScript, patterns } from './lib/patterns'
+import {
+  aggregateStatus,
+  getEntry,
+  loadProgress,
+  saveProgress,
+  withCode,
+  withStatus,
+} from './lib/progress'
+import type { Progress } from './lib/progress'
 import type { PatternStatus } from './lib/types'
 import ProblemPanel from './components/ProblemPanel'
 import PatternNav from './components/PatternNav'
@@ -18,17 +27,11 @@ const STATUS_LABEL: Record<RuntimeStatus, string> = {
   failed: 'Runtime failed',
 }
 
-/** Progress is per (pattern, language); stage 6 persists this to localStorage. */
-const key = (patternId: string, lang: LanguageId) => `${patternId}:${lang}`
-
 const FILE_EXTENSION: Record<LanguageId, string> = { python: 'py' }
 const MONACO_LANGUAGE: Record<LanguageId, string> = { python: 'python' }
 
-const RANK: Record<PatternStatus, number> = {
-  unattempted: 0,
-  attempted: 1,
-  passed: 2,
-}
+/** Editing writes on every keystroke; persistence waits for a pause. */
+const SAVE_DEBOUNCE_MS = 300
 
 export default function App() {
   const runtimeRef = useRef<Runtime | null>(null)
@@ -38,21 +41,29 @@ export default function App() {
 
   const [selectedId, setSelectedId] = useState(patterns[0]?.id ?? '')
   const [lang, setLang] = useState<LanguageId>('python')
-  const [codeByKey, setCodeByKey] = useState<Record<string, string>>({})
-  const [statusByKey, setStatusByKey] = useState<Record<string, PatternStatus>>(
-    {},
-  )
+  const [progress, setProgress] = useState<Progress>(loadProgress)
 
   const pattern = patterns.find((p) => p.id === selectedId) ?? patterns[0]
   const languages = useMemo(
-    () => (pattern ? (Object.keys(pattern.implementations) as LanguageId[]) : []),
+    () =>
+      pattern ? (Object.keys(pattern.implementations) as LanguageId[]) : [],
     [pattern],
   )
   const activeLang = languages.includes(lang) ? lang : languages[0]
-  const impl = pattern && activeLang ? pattern.implementations[activeLang] : undefined
+  const impl =
+    pattern && activeLang ? pattern.implementations[activeLang] : undefined
 
-  const currentKey = pattern && activeLang ? key(pattern.id, activeLang) : ''
-  const code = codeByKey[currentKey] ?? impl?.starter ?? ''
+  const code =
+    (pattern && activeLang
+      ? getEntry(progress, pattern.id, activeLang)?.lastCode
+      : undefined) ??
+    impl?.starter ??
+    ''
+
+  useEffect(() => {
+    const timer = setTimeout(() => saveProgress(progress), SAVE_DEBOUNCE_MS)
+    return () => clearTimeout(timer)
+  }, [progress])
 
   // One runtime per language: switching language tabs tears the old one down
   // and boots the new one.
@@ -81,31 +92,20 @@ export default function App() {
 
   const setCode = useCallback(
     (value: string) => {
-      if (!currentKey) return
-      setCodeByKey((prev) => ({ ...prev, [currentKey]: value }))
+      if (!pattern || !activeLang) return
+      setProgress((prev) => withCode(prev, pattern.id, activeLang, value))
     },
-    [currentKey],
-  )
-
-  /** Statuses only ever move forward: attempted never overwrites passed. */
-  const advanceStatus = useCallback(
-    (next: PatternStatus) => {
-      if (!currentKey) return
-      setStatusByKey((prev) => {
-        const current = prev[currentKey] ?? 'unattempted'
-        if (RANK[next] <= RANK[current]) return prev
-        return { ...prev, [currentKey]: next }
-      })
-    },
-    [currentKey],
+    [activeLang, pattern],
   )
 
   const runTests = useCallback(async () => {
     const runtime = runtimeRef.current
     if (!runtime || !pattern || !impl || !activeLang) return
     setRunning(true)
-    advanceStatus('attempted')
+    setProgress((prev) => withStatus(prev, pattern.id, activeLang, 'attempted'))
+
     const result = await runtime.run(buildTestScript(pattern, activeLang, code))
+
     setRunning(false)
     setOutput(
       [result.stdout, result.stderr]
@@ -113,8 +113,10 @@ export default function App() {
         .join('\n')
         .replace(/\n+$/, ''),
     )
-    if (allTestsPassed(result.stdout)) advanceStatus('passed')
-  }, [activeLang, advanceStatus, code, impl, pattern])
+    if (allTestsPassed(result.stdout)) {
+      setProgress((prev) => withStatus(prev, pattern.id, activeLang, 'passed'))
+    }
+  }, [activeLang, code, impl, pattern])
 
   function selectPattern(id: string) {
     setSelectedId(id)
@@ -122,24 +124,18 @@ export default function App() {
   }
 
   function resetCode() {
-    if (!currentKey) return
-    setCodeByKey((prev) => ({ ...prev, [currentKey]: impl?.starter ?? '' }))
+    if (!pattern || !activeLang) return
+    setProgress((prev) =>
+      withCode(prev, pattern.id, activeLang, impl?.starter ?? ''),
+    )
     setOutput('')
   }
 
-  /** Sidebar shows the best status across a pattern's implemented languages. */
   const aggregateStatuses = useMemo(() => {
     const out: Record<string, PatternStatus> = {}
-    for (const p of patterns) {
-      let best: PatternStatus = 'unattempted'
-      for (const l of Object.keys(p.implementations) as LanguageId[]) {
-        const status = statusByKey[key(p.id, l)] ?? 'unattempted'
-        if (RANK[status] > RANK[best]) best = status
-      }
-      out[p.id] = best
-    }
+    for (const p of patterns) out[p.id] = aggregateStatus(progress, p)
     return out
-  }, [statusByKey])
+  }, [progress])
 
   const passedCount = Object.values(aggregateStatuses).filter(
     (s) => s === 'passed',
