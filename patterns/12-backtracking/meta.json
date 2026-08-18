@@ -1,0 +1,15 @@
+{
+  "id": "12-backtracking",
+  "order": 12,
+  "pattern": "backtracking",
+  "title": "Generate all subsets",
+  "difficulty": "medium",
+  "description": "Given a list of distinct integers, return every possible subset, including the empty one. Order does not matter, within a subset or between them.",
+  "examples": [
+    "subsets([1,2])  -> [[],[1],[2],[1,2]]",
+    "subsets([])     -> [[]]",
+    "subsets([5])    -> [[],[5]]"
+  ],
+  "hint": "At each index you either take the element or skip it. Recurse with the current partial list, appending a copy whenever you run off the end.",
+  "implementations": { "python": { "functionName": "subsets" } }
+}

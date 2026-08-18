@@ -1,0 +1,15 @@
+{
+  "id": "10-topological-sort",
+  "order": 10,
+  "pattern": "topological sort",
+  "title": "Course schedule",
+  "difficulty": "medium",
+  "description": "Given num_courses courses labelled 0..num_courses-1 and a list of prerequisite pairs [a, b] meaning b must be taken before a, return True if every course can be completed.",
+  "examples": [
+    "can_finish(2, [[1, 0]])          -> True",
+    "can_finish(2, [[1, 0], [0, 1]])  -> False",
+    "can_finish(4, [[1,0],[2,1],[3,2]]) -> True"
+  ],
+  "hint": "Count incoming edges per course, queue everything with none, and peel them off while decrementing their dependents. If you cannot peel all of them, a cycle remains.",
+  "implementations": { "python": { "functionName": "can_finish" } }
+}

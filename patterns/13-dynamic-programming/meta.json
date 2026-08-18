@@ -1,0 +1,15 @@
+{
+  "id": "13-dynamic-programming",
+  "order": 13,
+  "pattern": "dynamic programming",
+  "title": "Climbing stairs",
+  "difficulty": "easy",
+  "description": "You climb a staircase of n steps, taking either one or two steps at a time. Return how many distinct ways there are to reach the top. Naive recursion will time out on the larger cases.",
+  "examples": [
+    "climb_stairs(2)  -> 2",
+    "climb_stairs(5)  -> 8",
+    "climb_stairs(10) -> 89"
+  ],
+  "hint": "The ways to reach step n are the ways to reach n-1 plus the ways to reach n-2, so keep two running values rather than recursing.",
+  "implementations": { "python": { "functionName": "climb_stairs" } }
+}

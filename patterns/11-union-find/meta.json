@@ -1,0 +1,15 @@
+{
+  "id": "11-union-find",
+  "order": 11,
+  "pattern": "union-find",
+  "title": "Number of connected components",
+  "difficulty": "medium",
+  "description": "Given n nodes labelled 0..n-1 and a list of undirected edges, return how many connected components the graph has.",
+  "examples": [
+    "count_components(5, [[0,1],[1,2],[3,4]]) -> 2",
+    "count_components(4, [])                  -> 4",
+    "count_components(3, [[0,1],[1,2],[0,2]]) -> 1"
+  ],
+  "hint": "Start with n components and a parent array where each node is its own root. Every union that joins two different roots drops the count by one.",
+  "implementations": { "python": { "functionName": "count_components" } }
+}

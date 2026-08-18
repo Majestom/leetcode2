@@ -1,0 +1,16 @@
+{
+  "id": "16-trie",
+  "order": 16,
+  "pattern": "trie",
+  "title": "Implement a Trie",
+  "difficulty": "medium",
+  "description": "Implement a Trie class supporting insert(word), search(word) returning True only for words that were inserted in full, and starts_with(prefix) returning True when any inserted word begins with the prefix. The tests share one Trie built by the setup, and later tests insert into it, so they build on each other in file order.",
+  "examples": [
+    "t = Trie(); t.insert('apple')",
+    "t.search('apple')      -> True",
+    "t.search('app')        -> False",
+    "t.starts_with('app')   -> True"
+  ],
+  "hint": "Each node holds a dict of children keyed by character plus a flag marking the end of a word. search checks the flag; starts_with only needs to reach the node. The empty prefix is always present, so starts_with('') is True.",
+  "implementations": { "python": { "functionName": "Trie" } }
+}
