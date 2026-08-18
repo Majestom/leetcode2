@@ -1,0 +1,15 @@
+{
+  "id": "07-cyclic-sort",
+  "order": 7,
+  "pattern": "cyclic sort",
+  "title": "Missing number",
+  "difficulty": "easy",
+  "description": "Given an array containing n distinct numbers drawn from the range 0..n, return the one number in that range which is missing.",
+  "examples": [
+    "missing_number([3, 0, 1])              -> 2",
+    "missing_number([9,6,4,2,3,5,7,0,1])    -> 8",
+    "missing_number([0])                    -> 1"
+  ],
+  "hint": "Place each value at the index matching its own value by swapping, then look for the first index whose value does not match. A sum or XOR trick also works.",
+  "implementations": { "python": { "functionName": "missing_number" } }
+}

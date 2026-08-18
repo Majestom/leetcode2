@@ -1,0 +1,15 @@
+{
+  "id": "04-fast-slow-pointers",
+  "order": 4,
+  "pattern": "fast & slow pointers",
+  "title": "Detect a cycle in a linked list",
+  "difficulty": "easy",
+  "description": "Define a Node class with val and next, then return True if the linked list starting at head contains a cycle. The test helper builds lists using your Node class, so it must accept Node(val) with next defaulting to None.",
+  "examples": [
+    "has_cycle(build_linked_list([1,2,3,4], cycle_at=1)) -> True",
+    "has_cycle(build_linked_list([1,2,3]))               -> False",
+    "has_cycle(build_linked_list([]))                    -> False"
+  ],
+  "hint": "Advance one pointer by one node and another by two. If they ever meet there is a cycle; if the fast one falls off the end there is not.",
+  "implementations": { "python": { "functionName": "has_cycle" } }
+}

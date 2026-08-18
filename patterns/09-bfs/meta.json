@@ -1,0 +1,15 @@
+{
+  "id": "09-bfs",
+  "order": 9,
+  "pattern": "breadth-first search",
+  "title": "Binary tree level order traversal",
+  "difficulty": "medium",
+  "description": "Define a TreeNode class with val, left and right, then return the node values level by level, as a list of lists from the root downward. An empty tree returns an empty list.",
+  "examples": [
+    "level_order(build_tree([3,9,20,None,None,15,7])) -> [[3],[9,20],[15,7]]",
+    "level_order(build_tree([]))                      -> []",
+    "level_order(build_tree([1]))                     -> [[1]]"
+  ],
+  "hint": "Keep a queue of the current level. Drain it fully into a list of values while pushing each node's children onto the next level.",
+  "implementations": { "python": { "functionName": "level_order" } }
+}

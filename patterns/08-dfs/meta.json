@@ -1,0 +1,15 @@
+{
+  "id": "08-dfs",
+  "order": 8,
+  "pattern": "depth-first search",
+  "title": "Maximum depth of a binary tree",
+  "difficulty": "easy",
+  "description": "Define a TreeNode class with val, left and right, then return the number of nodes along the longest path from the root down to a leaf. An empty tree has depth 0. The test helper builds trees from a level-order list using your TreeNode class, so it must accept TreeNode(val) with children defaulting to None.",
+  "examples": [
+    "max_depth(build_tree([3,9,20,None,None,15,7])) -> 3",
+    "max_depth(build_tree([]))                      -> 0",
+    "max_depth(build_tree([1,2,3]))                 -> 2"
+  ],
+  "hint": "The depth of a node is one more than the deeper of its two subtrees, and the depth of None is zero. That is the whole recursion.",
+  "implementations": { "python": { "functionName": "max_depth" } }
+}

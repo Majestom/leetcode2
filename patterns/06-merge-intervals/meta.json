@@ -1,0 +1,15 @@
+{
+  "id": "06-merge-intervals",
+  "order": 6,
+  "pattern": "merge intervals",
+  "title": "Merge overlapping intervals",
+  "difficulty": "medium",
+  "description": "Given a list of intervals as [start, end] pairs, merge every pair that overlaps and return the resulting list. Intervals that merely touch, such as [1,4] and [4,5], count as overlapping. Input order is not guaranteed and output order does not matter.",
+  "examples": [
+    "merge([[1,3],[2,6],[8,10],[15,18]]) -> [[1,6],[8,10],[15,18]]",
+    "merge([[1,4],[4,5]])                -> [[1,5]]",
+    "merge([[1,4],[2,3]])                -> [[1,4]]"
+  ],
+  "hint": "Sort by start. Walk the list keeping the current interval open, extending its end while the next start is not past it, and closing it otherwise.",
+  "implementations": { "python": { "functionName": "merge" } }
+}

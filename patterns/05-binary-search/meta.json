@@ -1,0 +1,15 @@
+{
+  "id": "05-binary-search",
+  "order": 5,
+  "pattern": "binary search",
+  "title": "First and last position of target",
+  "difficulty": "medium",
+  "description": "Given a sorted array and a target, return the first and last index at which the target appears, or (-1, -1) if it is absent. Aim for O(log n) rather than a scan.",
+  "examples": [
+    "search_range([5, 7, 7, 8, 8, 10], 8) -> (3, 4)",
+    "search_range([5, 7, 7, 8, 8, 10], 6) -> (-1, -1)",
+    "search_range([2, 2, 2, 2], 2)        -> (0, 3)"
+  ],
+  "hint": "Run two binary searches: one biased left that finds the first index not less than the target, and one biased right that finds the last.",
+  "implementations": { "python": { "functionName": "search_range" } }
+}

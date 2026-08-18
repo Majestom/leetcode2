@@ -1,0 +1,15 @@
+{
+  "id": "03-prefix-sum",
+  "order": 3,
+  "pattern": "prefix sum",
+  "title": "Subarray sum equals K",
+  "difficulty": "medium",
+  "description": "Given an array of integers and an integer k, return the number of contiguous subarrays whose sum equals k. The array may contain negatives, so a sliding window will not do.",
+  "examples": [
+    "subarray_sum([1, 1, 1], 2)       -> 2",
+    "subarray_sum([1, 2, 3], 3)       -> 2",
+    "subarray_sum([1, -1, 1, -1], 0)  -> 4"
+  ],
+  "hint": "Keep a running total and a dict counting how often each running total has been seen. At each step the answer grows by the count of (running_total - k).",
+  "implementations": { "python": { "functionName": "subarray_sum" } }
+}
