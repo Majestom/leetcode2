@@ -29,7 +29,8 @@ export default function Editor({
     <section className={styles.wrapper}>
       <div className={styles.filename}>{filename}</div>
       <MonacoEditor
-        height="50vh"
+        wrapperProps={{ className: styles.editor }}
+        height="100%"
         language={language}
         theme="vs-dark"
         value={value}

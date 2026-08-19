@@ -118,6 +118,18 @@ export default function App() {
     }
   }, [activeLang, code, impl, pattern])
 
+  // Monaco handles the shortcut while it has focus; this covers the rest of
+  // the page, e.g. straight after clicking a pattern in the sidebar.
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Enter' || !(e.metaKey || e.ctrlKey)) return
+      e.preventDefault()
+      if (!running && runtimeStatus === 'ready') void runTests()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [running, runTests, runtimeStatus])
+
   function selectPattern(id: string) {
     setSelectedId(id)
     setOutput('')

@@ -1,8 +1,18 @@
 .wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* Without this a flex child refuses to shrink below its content height. */
+  min-height: 160px;
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
   background: #1e1e1e; /* matches Monaco's vs-dark background */
+}
+
+.editor {
+  flex: 1;
+  min-height: 0;
 }
 
 .filename {

@@ -38,13 +38,18 @@
   min-height: 0;
 }
 
+/*
+ * The editor takes the leftover height rather than a fixed 50vh, so the output
+ * panel is always on screen without scrolling the page.
+ */
 .main {
   display: flex;
   flex-direction: column;
   gap: 12px;
   flex: 1;
   min-width: 0;
-  overflow-y: auto;
+  min-height: 0;
+  overflow: hidden;
   padding: 16px;
   color: var(--text-dim);
 }
@@ -87,4 +92,19 @@
   margin-left: auto;
   font-size: 12px;
   color: var(--text-dim);
+}
+
+/* Narrow windows: the sidebar becomes a scrollable strip above the problem. */
+@media (max-width: 900px) {
+  .body {
+    flex-direction: column;
+  }
+
+  .main {
+    padding: 12px;
+  }
+
+  .shortcut {
+    display: none;
+  }
 }

@@ -1,4 +1,8 @@
 .panel {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  max-height: 34vh;
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
@@ -15,7 +19,7 @@
 .body {
   margin: 0;
   padding: 10px;
-  max-height: 30vh;
+  min-height: 3.5em;
   overflow-y: auto;
   font-family: var(--font-mono);
   font-size: 12px;
