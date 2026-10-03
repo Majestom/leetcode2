@@ -1,0 +1,9 @@
+.logo {
+  flex-shrink: 0;
+  color: var(--accent);
+  display: block;
+}
+
+.target {
+  fill: var(--pass);
+}

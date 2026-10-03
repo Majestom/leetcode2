@@ -17,6 +17,7 @@ import PatternNav from './components/PatternNav'
 import LanguageTabs from './components/LanguageTabs'
 import Editor from './components/Editor'
 import OutputPanel from './components/OutputPanel'
+import Logo from './components/Logo'
 import styles from './App.module.css'
 
 type RuntimeStatus = 'loading' | 'ready' | 'failed'
@@ -160,7 +161,10 @@ export default function App() {
   return (
     <div className={styles.app}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Pattern Practice</h1>
+        <h1 className={styles.title}>
+          <Logo />
+          Pattern Practice
+        </h1>
         <span className={styles.status} data-state={runtimeStatus}>
           {STATUS_LABEL[runtimeStatus]} · {passedCount}/{patterns.length}
         </span>
