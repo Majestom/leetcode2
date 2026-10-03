@@ -5,7 +5,8 @@ const STORAGE_KEY = 'pp-progress'
 
 export type ProgressEntry = {
   status: PatternStatus
-  lastCode: string
+  /** Absent until the user edits; the starter code stands in until then. */
+  lastCode?: string
 }
 
 /** Keyed by pattern id, then language. */
@@ -49,9 +50,11 @@ export function loadProgress(): Progress {
       if (typeof entry !== 'object' || entry === null) continue
       const { status, lastCode } = entry as Partial<ProgressEntry>
       if (typeof status !== 'string' || !VALID_STATUSES.has(status)) continue
+      // Empty code counts as none: older builds stored '' for a pattern that
+      // was run but never edited, which reopened as a blank editor.
       langs[lang as LanguageId] = {
         status: status as PatternStatus,
-        lastCode: typeof lastCode === 'string' ? lastCode : '',
+        ...(typeof lastCode === 'string' && lastCode !== '' && { lastCode }),
       }
     }
     if (Object.keys(langs).length > 0) out[patternId] = langs
@@ -89,9 +92,8 @@ function update(
   lang: LanguageId,
   changes: Partial<ProgressEntry>,
 ): Progress {
-  const existing = getEntry(progress, patternId, lang) ?? {
-    status: 'unattempted' as PatternStatus,
-    lastCode: '',
+  const existing: ProgressEntry = getEntry(progress, patternId, lang) ?? {
+    status: 'unattempted',
   }
   return {
     ...progress,

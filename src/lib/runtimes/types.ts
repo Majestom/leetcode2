@@ -12,8 +12,6 @@ export interface Runtime {
   language: LanguageId
   displayName: string
   fileExtension: string
-  /** Monaco's language id for syntax highlighting. */
-  monacoLanguage: string
   /** Resolves once the runtime can accept `run()` calls; rejects if it failed to boot. */
   isReady(): Promise<void>
   run(code: string, timeoutMs?: number): Promise<RunResult>

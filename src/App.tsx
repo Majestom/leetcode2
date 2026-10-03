@@ -32,7 +32,6 @@ const STATUS_LABEL: Record<RuntimeStatus, string> = {
 }
 
 const FILE_EXTENSION: Record<LanguageId, string> = { python: 'py' }
-const MONACO_LANGUAGE: Record<LanguageId, string> = { python: 'python' }
 
 /** Editing writes on every keystroke; persistence waits for a pause. */
 const SAVE_DEBOUNCE_MS = 300
@@ -125,7 +124,7 @@ export default function App() {
     }
   }, [activeLang, code, impl, pattern])
 
-  // Monaco handles the shortcut while it has focus; this covers the rest of
+  // The editor handles the shortcut while it has focus; this covers the rest of
   // the page, e.g. straight after clicking a pattern in the sidebar.
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -207,8 +206,9 @@ export default function App() {
 
             <Editor
               value={code}
-              language={MONACO_LANGUAGE[activeLang]}
+              language={activeLang}
               filename={`solution.${FILE_EXTENSION[activeLang]}`}
+              docKey={`${pattern.id}:${activeLang}`}
               onChange={setCode}
               onRun={runTests}
             />

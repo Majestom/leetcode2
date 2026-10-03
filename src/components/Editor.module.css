@@ -7,12 +7,21 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
-  background: #1e1e1e; /* matches Monaco's vs-dark background */
+  background: #0b1220; /* matches the editor theme's background */
 }
 
 .editor {
   flex: 1;
   min-height: 0;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+/* Anything under 16px makes iOS Safari zoom the page when the editor gets focus. */
+@media (pointer: coarse) {
+  .editor {
+    font-size: 16px;
+  }
 }
 
 .filename {
@@ -24,8 +33,3 @@
   font-size: 12px;
 }
 
-.loading {
-  padding: 16px;
-  color: var(--text-dim);
-  font-size: 12px;
-}
