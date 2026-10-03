@@ -19,6 +19,10 @@ npm run preview  # serve the production build
 npm run lint     # oxlint
 ```
 
+### Deploying
+
+Every push to `main` builds and publishes the app to GitHub Pages via `.github/workflows/deploy.yml`, at <https://majestom.github.io/leetcode2/>. Production builds are served from `/leetcode2/` (`base` in `vite.config.ts`); rename the repo and that path must change with it. Progress lives in each browser's `localStorage`, so it does not carry over between `localhost` and the deployed site.
+
 ## Using it
 
 Pick a pattern from the sidebar, write your solution in the editor, and hit **Run tests** or **⌘/Ctrl + Enter**. Output is coloured per line: green `PASS`, red `FAIL`, amber `ERROR`, with a bold `N/N tests passed` summary.
