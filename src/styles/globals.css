@@ -1,4 +1,7 @@
 :root {
+  /* Dark native controls: scrollbars, and the select's picker sheet. */
+  color-scheme: dark;
+
   --bg: #020617;
   --panel: #0f172a;
   --border: #1e293b;
@@ -23,6 +26,21 @@ html,
 body,
 #root {
   height: 100%;
+}
+
+/* Mobile browsers count their collapsing toolbars in 100%; dvh does not. */
+#root {
+  height: 100dvh;
+}
+
+/* Touch screens: stay inside the visual viewport, above the on-screen keyboard. */
+@media (pointer: coarse) {
+  #root {
+    position: fixed;
+    inset-inline: 0;
+    top: var(--vv-top, 0);
+    height: var(--vv-height, 100dvh);
+  }
 }
 
 body {

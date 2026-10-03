@@ -18,6 +18,9 @@ import LanguageTabs from './components/LanguageTabs'
 import Editor from './components/Editor'
 import OutputPanel from './components/OutputPanel'
 import Logo from './components/Logo'
+import PatternPicker from './components/PatternPicker'
+import PaneSwitcher from './components/PaneSwitcher'
+import type { Pane } from './components/PaneSwitcher'
 import styles from './App.module.css'
 
 type RuntimeStatus = 'loading' | 'ready' | 'failed'
@@ -29,7 +32,6 @@ const STATUS_LABEL: Record<RuntimeStatus, string> = {
 }
 
 const FILE_EXTENSION: Record<LanguageId, string> = { python: 'py' }
-const MONACO_LANGUAGE: Record<LanguageId, string> = { python: 'python' }
 
 /** Editing writes on every keystroke; persistence waits for a pause. */
 const SAVE_DEBOUNCE_MS = 300
@@ -39,6 +41,8 @@ export default function App() {
   const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus>('loading')
   const [running, setRunning] = useState(false)
   const [output, setOutput] = useState('')
+  // Only consulted by the phone layout; wider layouts show every pane at once.
+  const [pane, setPane] = useState<Pane>('problem')
 
   const [selectedId, setSelectedId] = useState(patterns[0]?.id ?? '')
   const [lang, setLang] = useState<LanguageId>('python')
@@ -103,6 +107,7 @@ export default function App() {
     const runtime = runtimeRef.current
     if (!runtime || !pattern || !impl || !activeLang) return
     setRunning(true)
+    setPane('output')
     setProgress((prev) => withStatus(prev, pattern.id, activeLang, 'attempted'))
 
     const result = await runtime.run(buildTestScript(pattern, activeLang, code))
@@ -119,7 +124,7 @@ export default function App() {
     }
   }, [activeLang, code, impl, pattern])
 
-  // Monaco handles the shortcut while it has focus; this covers the rest of
+  // The editor handles the shortcut while it has focus; this covers the rest of
   // the page, e.g. straight after clicking a pattern in the sidebar.
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -134,6 +139,7 @@ export default function App() {
   function selectPattern(id: string) {
     setSelectedId(id)
     setOutput('')
+    setPane('problem')
   }
 
   function resetCode() {
@@ -168,6 +174,12 @@ export default function App() {
         <span className={styles.status} data-state={runtimeStatus}>
           {STATUS_LABEL[runtimeStatus]} · {passedCount}/{patterns.length}
         </span>
+        <PatternPicker
+          patterns={patterns}
+          selectedId={pattern.id}
+          statuses={aggregateStatuses}
+          onSelect={selectPattern}
+        />
       </header>
 
       <div className={styles.body}>
@@ -178,22 +190,29 @@ export default function App() {
           onSelect={selectPattern}
         />
 
-        <main className={styles.main}>
-          <ProblemPanel pattern={pattern} />
+        <main className={styles.main} data-active={pane}>
+          <PaneSwitcher selected={pane} onSelect={setPane} />
 
-          <LanguageTabs
-            languages={languages}
-            selected={activeLang}
-            onSelect={setLang}
-          />
+          <div className={styles.pane} data-pane="problem">
+            <ProblemPanel pattern={pattern} />
+          </div>
 
-          <Editor
-            value={code}
-            language={MONACO_LANGUAGE[activeLang]}
-            filename={`solution.${FILE_EXTENSION[activeLang]}`}
-            onChange={setCode}
-            onRun={runTests}
-          />
+          <div className={styles.pane} data-pane="code">
+            <LanguageTabs
+              languages={languages}
+              selected={activeLang}
+              onSelect={setLang}
+            />
+
+            <Editor
+              value={code}
+              language={activeLang}
+              filename={`solution.${FILE_EXTENSION[activeLang]}`}
+              docKey={`${pattern.id}:${activeLang}`}
+              onChange={setCode}
+              onRun={runTests}
+            />
+          </div>
 
           <div className={styles.actions}>
             <button
@@ -209,7 +228,9 @@ export default function App() {
             <span className={styles.shortcut}>⌘/Ctrl + Enter</span>
           </div>
 
-          <OutputPanel text={output} running={running} />
+          <div className={styles.pane} data-pane="output">
+            <OutputPanel text={output} running={running} />
+          </div>
         </main>
       </div>
     </div>

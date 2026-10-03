@@ -13,7 +13,6 @@ export class PyodideRuntime implements Runtime {
   language = 'python' as const
   displayName = 'Python'
   fileExtension = 'py'
-  monacoLanguage = 'python'
 
   private worker: Worker | null = null
   private readyPromise!: Promise<void>

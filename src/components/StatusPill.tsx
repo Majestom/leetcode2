@@ -1,11 +1,6 @@
 import type { PatternStatus } from '../lib/types'
+import { GLYPH } from '../lib/status'
 import styles from './StatusPill.module.css'
-
-const GLYPH: Record<PatternStatus, string> = {
-  passed: '●',
-  attempted: '◐',
-  unattempted: '○',
-}
 
 const LABEL: Record<PatternStatus, string> = {
   passed: 'all tests passing',

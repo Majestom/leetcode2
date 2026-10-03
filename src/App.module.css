@@ -6,8 +6,10 @@
 
 .header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
 }
@@ -57,6 +59,11 @@
   color: var(--text-dim);
 }
 
+/* Transparent to layout above the phone breakpoint, so panes stack as before. */
+.pane {
+  display: contents;
+}
+
 .actions {
   display: flex;
   align-items: center;
@@ -97,7 +104,7 @@
   color: var(--text-dim);
 }
 
-/* Narrow windows: the sidebar becomes a scrollable strip above the problem. */
+/* Tablet widths: the sidebar becomes a scrollable strip above the problem. */
 @media (max-width: 900px) {
   .body {
     flex-direction: column;
@@ -109,5 +116,55 @@
 
   .shortcut {
     display: none;
+  }
+}
+
+/* Touch screens have no shortcut to advertise, whatever their width. */
+@media (hover: none) and (pointer: coarse) {
+  .shortcut {
+    display: none;
+  }
+}
+
+/*
+ * Phones: one pane at a time, chosen by PaneSwitcher, with the run controls
+ * pinned to the bottom so they are reachable from every pane.
+ */
+@media (max-width: 600px) {
+  .header {
+    padding: 10px 12px;
+  }
+
+  .main {
+    gap: 8px;
+    padding: 8px 12px 12px;
+  }
+
+  .pane {
+    display: none;
+  }
+
+  .main[data-active='problem'] .pane[data-pane='problem'],
+  .main[data-active='code'] .pane[data-pane='code'],
+  .main[data-active='output'] .pane[data-pane='output'] {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .actions {
+    order: 1;
+  }
+
+  .button,
+  .runButton {
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 15px;
+  }
+
+  .runButton {
+    flex: 1;
   }
 }
