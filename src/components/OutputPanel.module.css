@@ -53,3 +53,20 @@
 .running {
   color: var(--text-dim);
 }
+
+/* Phones give the output its own pane, so it takes the full height. */
+@media (max-width: 600px) {
+  .panel {
+    flex: 1;
+    max-height: none;
+  }
+
+  /* The pane switcher's tab already says Output. */
+  .header {
+    display: none;
+  }
+
+  .body {
+    flex: 1;
+  }
+}

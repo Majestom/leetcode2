@@ -91,3 +91,16 @@
   line-height: 1.5;
   color: var(--text);
 }
+
+/* Phones give the problem its own pane, so it takes the full height. */
+@media (max-width: 600px) {
+  .panel {
+    flex: 1;
+    max-height: none;
+  }
+
+  .hintButton {
+    min-height: 36px;
+    padding: 0 12px;
+  }
+}
